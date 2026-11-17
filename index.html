@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#194b88">
+  <title>Mallayla Cafe — Order Online</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #171944;
+      --navy: #194b88;
+      --royal: #5854e8;
+      --page: #a9bbff;
+      --card: #8e9df1;
+      --card-deep: #6f80d2;
+      --cream: #f4e3df;
+      --white: #fffaf8;
+      --summary: #26064f;
+      --radius: 16px;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .site-header {
+      display: grid;
+      min-height: 132px;
+      place-items: center;
+      padding: 22px 24px;
+      background: var(--navy);
+      color: var(--white);
+      text-align: center;
+    }
+
+    .brand {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 2.4vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.045em;
+    }
+
+    .tagline {
+      margin: 7px 0 0;
+      color: #e2e4ff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      letter-spacing: 0.035em;
+    }
+
+    .header-accent {
+      height: 13px;
+      background: var(--royal);
+      box-shadow: 0 3px 8px rgb(46 32 156 / 16%);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 278px;
+      gap: 30px;
+      width: min(100%, 1440px);
+      min-height: calc(100vh - 145px);
+      margin: 0 auto;
+      padding: 28px 30px 34px;
+    }
+
+    .menu-section {
+      min-width: 0;
+    }
+
+    .menu-toolbar {
+      display: grid;
+      grid-template-columns: max-content minmax(220px, 1fr);
+      align-items: center;
+      gap: 30px;
+      margin: 0 0 20px;
+    }
+
+    .section-label {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.075em;
+      text-transform: uppercase;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .search-wrap::before {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      width: 13px;
+      height: 13px;
+      border: 1.7px solid #6c6790;
+      border-radius: 50%;
+      content: "";
+      transform: translateY(-60%);
+    }
+
+    .search-wrap::after {
+      position: absolute;
+      top: calc(50% + 5px);
+      left: 27px;
+      width: 6px;
+      height: 1.7px;
+      background: #6c6790;
+      content: "";
+      transform: rotate(45deg);
+      transform-origin: left center;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 15px 10px 41px;
+      border: 1px solid rgb(76 69 154 / 15%);
+      border-radius: 7px;
+      outline: none;
+      background: var(--cream);
+      color: var(--ink);
+      box-shadow: 0 2px 6px rgb(51 45 131 / 8%);
+    }
+
+    .search-input::placeholder,
+    .details-input::placeholder {
+      color: #77718d;
+      opacity: 1;
+    }
+
+    .search-input:focus,
+    .details-input:focus {
+      border-color: var(--royal);
+      box-shadow: 0 0 0 3px rgb(88 84 232 / 17%);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .product-card {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 13px;
+      overflow: hidden;
+      border: 1px solid rgb(64 71 160 / 12%);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: 0 5px 12px rgb(42 46 122 / 13%);
+    }
+
+    .product-card:nth-child(3n + 2) {
+      background: #8494e8;
+    }
+
+    .product-card:nth-child(3n) {
+      background: var(--card-deep);
+    }
+
+    .product-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1.9 / 1;
+      overflow: hidden;
+      border-radius: 9px;
+      background: #76563f;
+    }
+
+    .product-art svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .product-name {
+      margin: 12px 0 4px;
+      color: var(--white);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .product-description {
+      min-height: 38px;
+      margin: 0 0 9px;
+      color: #22244f;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .product-price {
+      color: #171642;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .quantity-control {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+      padding: 3px 5px;
+      border: 1px solid rgb(47 39 114 / 8%);
+      border-radius: 999px;
+      background: var(--cream);
+    }
+
+    .quantity-button {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--summary);
+      cursor: pointer;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .quantity-button:hover:not(:disabled) {
+      background: rgb(88 84 232 / 13%);
+    }
+
+    .quantity-button:focus-visible,
+    .place-order:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .quantity-button:disabled {
+      color: #aaa4b4;
+      cursor: not-allowed;
+    }
+
+    .quantity-value {
+      min-width: 21px;
+      color: var(--ink);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      padding: 36px 20px;
+      border: 1px dashed rgb(38 6 79 / 35%);
+      border-radius: var(--radius);
+      color: var(--ink);
+      text-align: center;
+    }
+
+    .customer-panel {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .details-heading {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 23px;
+      line-height: 1.15;
+    }
+
+    .details-subtitle {
+      margin: 5px 0 0;
+      color: #393c72;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .details-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field-label {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .details-input {
+      width: 100%;
+      min-height: 40px;
+      padding: 10px 12px;
+      border: 1px solid rgb(76 69 154 / 14%);
+      border-radius: 6px;
+      outline: none;
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 13px;
+      box-shadow: 0 2px 5px rgb(51 45 131 / 7%);
+    }
+
+    textarea.details-input {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .order-summary {
+      margin-top: auto;
+      padding: 16px 14px 13px;
+      border: 1px solid rgb(19 3 56 / 18%);
+      border-radius: 9px;
+      background: var(--summary);
+      color: #fff;
+      box-shadow: 0 6px 13px rgb(36 14 84 / 20%);
+    }
+
+    .summary-title {
+      margin: 0 0 12px;
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .summary-lines {
+      display: grid;
+      gap: 8px;
+      max-height: 170px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+
+    .summary-empty {
+      margin: 0;
+      color: #d6c9e8;
+      font-size: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      color: #f6f0ff;
+    }
+
+    .summary-row span:first-child {
+      min-width: 0;
+    }
+
+    .summary-row span:last-child {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 13px 0;
+      padding-top: 10px;
+      border-top: 1px solid rgb(255 255 255 / 28%);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .place-order {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--cream);
+      color: var(--summary);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .place-order:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .place-order:disabled {
+      cursor: not-allowed;
+      opacity: 0.56;
+    }
+
+    .order-status {
+      min-height: 0;
+      margin: 0;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .order-status:empty {
+      display: none;
+    }
+
+    .order-status[data-state="error"] {
+      color: #ffd1d1;
+    }
+
+    .order-status[data-state="success"] {
+      color: #d5ffd9;
+    }
+
+    @media (max-width: 1050px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr) 250px;
+        gap: 20px;
+        padding-right: 22px;
+        padding-left: 22px;
+      }
+
+      .menu-grid {
+        gap: 16px;
+      }
+
+      .product-card {
+        padding: 10px;
+      }
+
+      .product-name {
+        font-size: 16px;
+      }
+
+      .product-description {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .site-header {
+        min-height: 104px;
+      }
+
+      .header-accent {
+        height: 9px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 26px;
+        padding: 22px 18px 28px;
+      }
+
+      .menu-toolbar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .customer-panel {
+        gap: 14px;
+      }
+
+      .order-summary {
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .layout {
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-card {
+        padding: 12px;
+      }
+
+      .product-art {
+        aspect-ratio: 2.1 / 1;
+      }
+
+      .product-description {
+        min-height: auto;
+        font-size: 12px;
+      }
+
+      .customer-panel {
+        padding-bottom: 4px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <h1 class="brand">mallayla cafe</h1>
+      <p class="tagline">its a rich coffe bean from london</p>
+    </div>
+  </header>
+  <div class="header-accent" aria-hidden="true"></div>
+
+  <main class="layout">
+    <section class="menu-section" aria-labelledby="menu-heading">
+      <div class="menu-toolbar">
+        <h2 class="section-label" id="menu-heading">Select Items</h2>
+        <label class="search-wrap">
+          <span class="visually-hidden">Search menu</span>
+          <input class="search-input" id="menu-search" type="search" placeholder="Search menu..." autocomplete="off">
+        </label>
+      </div>
+      <div class="menu-grid" id="menu-grid" aria-live="polite"></div>
+    </section>
+
+    <aside class="customer-panel" aria-labelledby="details-heading">
+      <div>
+        <h2 class="details-heading" id="details-heading">Your Details</h2>
+        <p class="details-subtitle">We'll use these to confirm your order</p>
+      </div>
+
+      <form class="details-form" id="customer-form">
+        <label class="field">
+          <span class="field-label">Name</span>
+          <input class="details-input" id="customer-name" name="customerName" type="text" placeholder="Full name" autocomplete="name" required>
+        </label>
+        <label class="field">
+          <span class="field-label">Mobile Number</span>
+          <input class="details-input" id="customer-mobile" name="mobile" type="tel" placeholder="+91 98765 43210" autocomplete="tel" required>
+        </label>
+        <label class="field">
+          <span class="field-label">Instructions (Optional)</span>
+          <textarea class="details-input" id="customer-instructions" name="instructions" placeholder="Any special requests?"></textarea>
+        </label>
+
+        <section class="order-summary" aria-labelledby="summary-heading">
+          <h3 class="summary-title" id="summary-heading">Order Summary</h3>
+          <div class="summary-lines" id="summary-lines">
+            <p class="summary-empty">Your order is empty</p>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="summary-total">₹0</span>
+          </div>
+          <button class="place-order" id="place-order" type="submit" disabled>Place Order - ₹0</button>
+          <p class="order-status" id="order-status" role="status" aria-live="polite"></p>
+        </section>
+      </form>
+    </aside>
+  </main>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPcU2zgR4Yp5z1HhEEIeSB5ZWrQZ4L8L-XAdvSppUe-QLGvvqH6MYOVqQS7eDIVceF/exec";
+
+    const menuItems = [
+      {
+        name: "Cold Coffee",
+        description: "Rich cold brew with velvety milk foam, served over ice.",
+        price: 159,
+        quantity: 0,
+        drink: "cold"
+      },
+      {
+        name: "Hot Espresso",
+        description: "Double shot of dark-roast espresso with a rich crema.",
+        price: 99,
+        quantity: 0,
+        drink: "espresso"
+      },
+      {
+        name: "Caramel Latte",
+        description: "Silky steamed milk, a shot of espresso, and house-made caramel.",
+        price: 179,
+        quantity: 0,
+        drink: "caramel"
+      },
+      {
+        name: "Matcha Latte",
+        description: "Ceremonial-grade matcha whisked smooth with oat milk.",
+        price: 169,
+        quantity: 0,
+        drink: "matcha"
+      },
+      {
+        name: "Mocha Frost",
+        description: "Blended chocolate, espresso, and cold milk.",
+        price: 189,
+        quantity: 0,
+        drink: "mocha"
+      },
+      {
+        name: "Chai Masala",
+        description: "Whole spices slow-simmered in milk and tea.",
+        price: 89,
+        quantity: 0,
+        drink: "chai"
+      }
+    ];
+
+    const menuGrid = document.getElementById("menu-grid");
+    const searchInput = document.getElementById("menu-search");
+    const summaryLines = document.getElementById("summary-lines");
+    const summaryTotal = document.getElementById("summary-total");
+    const customerForm = document.getElementById("customer-form");
+    const placeOrderButton = document.getElementById("place-order");
+    const orderStatus = document.getElementById("order-status");
+    const customerNameInput = document.getElementById("customer-name");
+    const mobileInput = document.getElementById("customer-mobile");
+    const instructionsInput = document.getElementById("customer-instructions");
+
+    function drinkArtwork(kind, label) {
+      const drinkColors = {
+        cold: ["#6e3c23", "#d9b891"],
+        espresso: ["#4b281c", "#e7d5bd"],
+        caramel: ["#a5652e", "#f2d5a5"],
+        matcha: ["#607c45", "#d9e3b1"],
+        mocha: ["#5b3325", "#c89b73"],
+        chai: ["#a7622e", "#e4bd83"]
+      };
+      const colors = drinkColors[kind];
+      const cup = colors[0];
+      const cream = colors[1];
+      return `
+        <svg viewBox="0 0 420 220" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="scene-${kind}" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#b77c4a"/>
+              <stop offset="1" stop-color="#553420"/>
+            </linearGradient>
+            <linearGradient id="cup-${kind}" x1="0" y1="0" x2="0.8" y2="1">
+              <stop offset="0" stop-color="${cream}"/>
+              <stop offset="1" stop-color="#fff5df"/>
+            </linearGradient>
+            <filter id="shadow-${kind}" x="-30%" y="-30%" width="160%" height="180%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
+              <feOffset dy="7"/>
+              <feComponentTransfer><feFuncA type="linear" slope=".28"/></feComponentTransfer>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="420" height="220" fill="url(#scene-${kind})"/>
+          <path d="M0 166C92 143 185 177 277 151s115-7 143-20v89H0z" fill="#38251c" opacity=".58"/>
+          <ellipse cx="204" cy="181" rx="150" ry="15" fill="#1e1713" opacity=".32"/>
+          <g filter="url(#shadow-${kind})">
+            <path d="M72 71h119l-11 91c-2 17-17 29-34 29h-29c-17 0-31-12-33-29z" fill="url(#cup-${kind})"/>
+            <path d="M82 84h100l-3 19H84z" fill="${cup}"/>
+            <path d="M84 101h97l-7 56c-2 14-13 22-27 22h-30c-14 0-25-8-27-22z" fill="${cup}"/>
+            <path d="M96 105c16-15 44-14 58 0-2 13-12 21-29 21-16 0-27-8-29-21z" fill="${cream}"/>
+            <path d="M103 106c7 5 17 7 28 6" fill="none" stroke="#fff1d2" stroke-width="4" stroke-linecap="round"/>
+            <path d="M188 104c29-1 35 36 8 42" fill="none" stroke="#fff0d4" stroke-width="8" stroke-linecap="round"/>
+          </g>
+          <g filter="url(#shadow-${kind})">
+            <path d="M230 54h112l-12 104c-2 18-17 31-35 31h-19c-18 0-33-13-35-31z" fill="url(#cup-${kind})"/>
+            <path d="M240 67h91l-2 17h-87z" fill="#f7ebd8"/>
+            <path d="M240 84h91l-9 68c-2 15-13 24-28 24h-16c-15 0-26-9-28-24z" fill="${cup}"/>
+            <path d="M248 90c17-17 51-18 76 0-5 12-18 18-39 18-19 0-32-6-37-18z" fill="${cream}"/>
+            <path d="M260 91c9 5 23 7 38 5" fill="none" stroke="#fff2d6" stroke-width="4" stroke-linecap="round"/>
+            <path d="M333 90c26-3 31 32 8 38" fill="none" stroke="#fff0d4" stroke-width="8" stroke-linecap="round"/>
+          </g>
+          <circle cx="356" cy="49" r="13" fill="#f2d9a8" opacity=".48"/>
+          <circle cx="53" cy="42" r="8" fill="#f2d9a8" opacity=".32"/>
+          <path d="M28 202h364" stroke="#edc78d" stroke-opacity=".23" stroke-width="2"/>
+        </svg>`;
+    }
+
+    function formatPrice(amount) {
+      return `₹${amount}`;
+    }
+
+    function renderMenu() {
+      const query = searchInput.value.trim().toLocaleLowerCase();
+      const visibleItems = menuItems.filter((item) =>
+        `${item.name} ${item.description}`.toLocaleLowerCase().includes(query)
+      );
+
+      if (visibleItems.length === 0) {
+        menuGrid.innerHTML = '<p class="no-results">No menu items found.</p>';
+        return;
+      }
+
+      menuGrid.innerHTML = visibleItems.map((item) => `
+        <article class="product-card">
+          <div class="product-art">${drinkArtwork(item.drink, `${item.name} product image`)}</div>
+          <h3 class="product-name">${item.name}</h3>
+          <p class="product-description">${item.description}</p>
+          <div class="product-bottom">
+            <span class="product-price">${formatPrice(item.price)}</span>
+            <div class="quantity-control" aria-label="Quantity for ${item.name}">
+              <button
+                class="quantity-button"
+                type="button"
+                data-action="decrease"
+                data-item="${item.name}"
+                aria-label="Remove one ${item.name}"
+                ${item.quantity === 0 ? "disabled" : ""}
+              >−</button>
+              <output class="quantity-value" aria-live="polite">${String(item.quantity).padStart(2, "0")}</output>
+              <button
+                class="quantity-button"
+                type="button"
+                data-action="increase"
+                data-item="${item.name}"
+                aria-label="Add one ${item.name}"
+              >+</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function getOrderTotal() {
+      return menuItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    }
+
+    function renderSummary() {
+      const selectedItems = menuItems.filter((item) => item.quantity > 0);
+      summaryLines.innerHTML = selectedItems.length
+        ? selectedItems.map((item) => `
+            <div class="summary-row">
+              <span>${item.name} ×${item.quantity}</span>
+              <span>${formatPrice(item.price * item.quantity)}</span>
+            </div>
+          `).join("")
+        : '<p class="summary-empty">Your order is empty</p>';
+
+      const total = getOrderTotal();
+      summaryTotal.textContent = formatPrice(total);
+      placeOrderButton.textContent = `Place Order - ${formatPrice(total)}`;
+      updatePlaceOrderButton();
+    }
+
+    function updatePlaceOrderButton() {
+      const hasItems = menuItems.some((item) => item.quantity > 0);
+      const hasCustomerDetails =
+        customerNameInput.value.trim().length > 0 &&
+        mobileInput.value.trim().length > 0;
+      placeOrderButton.disabled = !hasItems || !hasCustomerDetails;
+    }
+
+    function setOrderStatus(message, state) {
+      orderStatus.textContent = message;
+      orderStatus.dataset.state = state;
+    }
+
+    function resetOrderState() {
+      customerNameInput.value = "";
+      mobileInput.value = "";
+      instructionsInput.value = "";
+
+      menuItems.forEach((item) => {
+        item.quantity = 0;
+      });
+
+      renderMenu();
+      renderSummary();
+    }
+
+    function showSuccess() {
+      resetOrderState();
+      setOrderStatus("Order submitted. We'll be in touch to confirm it.", "success");
+      updatePlaceOrderButton();
+    }
+
+    function showError() {
+      setOrderStatus("We couldn't send your order. Please try again.", "error");
+      updatePlaceOrderButton();
+    }
+
+    menuGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const item = menuItems.find((menuItem) => menuItem.name === button.dataset.item);
+      if (!item) return;
+
+      if (button.dataset.action === "increase") {
+        item.quantity += 1;
+      } else {
+        item.quantity = Math.max(0, item.quantity - 1);
+      }
+
+      orderStatus.textContent = "";
+      renderMenu();
+      renderSummary();
+    });
+
+    searchInput.addEventListener("input", renderMenu);
+    customerNameInput.addEventListener("input", updatePlaceOrderButton);
+    mobileInput.addEventListener("input", updatePlaceOrderButton);
+
+    customerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      updatePlaceOrderButton();
+      if (placeOrderButton.disabled) return;
+
+      const customerName = customerNameInput.value.trim();
+      const mobile = mobileInput.value.trim();
+      const instructions = instructionsInput.value.trim();
+      const orderItems = menuItems
+        .filter((item) => item.quantity > 0)
+        .map((item) => `${item.name} x${item.quantity}`)
+        .join(", ");
+      const totalAmount = String(getOrderTotal());
+
+      setOrderStatus("Sending your order…", "sending");
+      placeOrderButton.disabled = true;
+      const url = SCRIPT_URL + "?" + new URLSearchParams({
+        customerName,
+        mobile,
+        instructions,
+        orderItems,
+        totalAmount
+      });
+
+      fetch(url, {
+        method: "GET",
+        mode: "no-cors"
+      })
+        .then(() => showSuccess())
+        .catch(() => showError());
+    });
+
+    renderMenu();
+    renderSummary();
+  </script>
+</body>
+</html>
